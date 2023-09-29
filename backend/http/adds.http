@@ -1,0 +1,141 @@
+GET http://localhost:4000/ad
+
+###
+
+GET http://localhost:4000/ad/31
+
+###
+
+POST http://localhost:4000/ad
+Content-Type: application/json
+
+[
+  {
+    "title": "Classic Literature Collection 2",
+    "description": "Rare collection of classic literature books, including works by famous French authors.",
+    "owner": "bookcollector@gmail.com",
+    "price": 250,
+    "picture": "https://example.com/books-image.jpg",
+    "location": "Nice",
+    "createdAt": "2023-10-07T14:45:00.000Z",
+    "category": 6,
+    "tags": [{"id": 1}, {"id": 2 }]
+  }
+]
+
+# [
+#   {
+#     "id": 1,
+#     "title": "Classic Literature Collection",
+#     "description": "Rare collection of classic literature books, including works by famous French authors.",
+#     "owner": "bookcollector@gmail.com",
+#     "price": 250,
+#     "picture": "https://example.com/books-image.jpg",
+#     "location": "Bordeaux",
+#     "createdAt": "2023-10-07T14:45:00.000Z",
+#     "category": 6
+#   },
+#   {
+#     "id": 2,
+#     "title": "Antique French Dining Set",
+#     "description": "Elegant antique French dining set with handcrafted details. Perfect for your dining room.",
+#     "owner": "antiquecollector@gmail.com",
+#     "price": 1500,
+#     "picture": "https://example.com/furniture-image.jpg",
+#     "location": "Lyon",
+#     "createdAt": "2023-10-08T16:00:00.000Z",
+#     "category": 7
+#   },
+#   {
+#     "id": 3,
+#     "title": "Smartphone (Brand New)",
+#     "description": "Brand new smartphone with the latest features and technology. Unopened box.",
+#     "owner": "techenthusiast@gmail.com",
+#     "price": 700,
+#     "picture": "https://example.com/phone-image.jpg",
+#     "location": "Nice",
+#     "createdAt": "2023-10-09T09:15:00.000Z",
+#     "category": 2
+#   },
+#   {
+#     "id": 4,
+#     "title": "Vintage French Tableware",
+#     "description": "Exquisite vintage French tableware set with a touch of nostalgia. Ideal for special occasions.",
+#     "owner": "vintagecollector@gmail.com",
+#     "price": 100,
+#     "picture": "https://example.com/tableware-image.jpg",
+#     "location": "Toulouse",
+#     "createdAt": "2023-10-10T14:30:00.000Z",
+#     "category": 3
+#   },
+#   {
+#     "id": 5,
+#     "title": "Mountain Bike",
+#     "description": "High-performance mountain bike for off-road adventures. Excellent condition.",
+#     "owner": "outdoor enthusiast@gmail.com",
+#     "price": 450,
+#     "picture": "https://example.com/bike-image.jpg",
+#     "location": "Grenoble",
+#     "createdAt": "2023-10-11T11:45:00.000Z",
+#     "category": 4
+#   },
+#   {
+#     "id": 6,
+#     "title": "Designer Dress (Size 6)",
+#     "description": "Elegant designer dress, size 6, never worn. Perfect for a special occasion.",
+#     "owner": "fashionista@gmail.com",
+#     "price": 250,
+#     "picture": "https://example.com/dress-image.jpg",
+#     "location": "Lille",
+#     "createdAt": "2023-10-12T15:20:00.000Z",
+#     "category": 5
+#   }
+# ]
+
+# {
+#   "title": "Boat to sell",
+#   "description":
+#       "My boat is green, working fine. I'm selling it because I've got a new one",
+#   "owner": "boat.seller@gmail.com",
+#   "price": 30000,
+#   "picture":
+#       "https://www.automobile-magazine.fr/asset/cms/34973/config/28294/apres-plusieurs-prototypes-la-bollore-bluecar-a-fini-par-devoiler-sa-version-definitive.jpg",
+#   "location": "Paris",
+#   "createdAt": "2023-10-05T10:14:15.922Z",
+#   "category_id": 6
+# }
+
+
+###
+
+DELETE http://localhost:4000/ad/2
+Content-Type: application/json
+
+{
+  "id": 1
+}
+
+###
+
+PUT http://localhost:4000/ad/1
+Content-Type: application/json
+
+{
+  "imageUrl": "https://discord.com/invite/ErGXYYDn"
+}
+
+# {
+#   "idToEdit": 0,
+#   "newAd": {
+#   "id": 0,
+#   "title": "Train to sell",
+#   "description":
+#       "My train is green, working fine. I'm selling it because I've got a new one",
+#   "owner": "train.seller@gmail.com",
+#   "price": 40000,
+#   "picture":
+#       "https://www.automobile-magazine.fr/asset/cms/34973/config/28294/apres-plusieurs-prototypes-la-bollore-bluecar-a-fini-par-devoiler-sa-version-definitive.jpg",
+#   "location": "Paris",
+#   "createdAt": "2023-10-05T10:14:15.922Z"
+#   }
+# }
