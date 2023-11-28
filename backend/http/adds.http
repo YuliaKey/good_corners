@@ -1,27 +1,39 @@
-GET http://localhost:4000/ad
+GET http://localhost:4000/ad?category=Electronics
 
 ###
 
-GET http://localhost:4000/ad/31
+GET http://localhost:4000/ad
 
 ###
 
 POST http://localhost:4000/ad
 Content-Type: application/json
 
-[
-  {
-    "title": "Classic Literature Collection 2",
-    "description": "Rare collection of classic literature books, including works by famous French authors.",
-    "owner": "bookcollector@gmail.com",
-    "price": 250,
-    "picture": "https://example.com/books-image.jpg",
-    "location": "Nice",
-    "createdAt": "2023-10-07T14:45:00.000Z",
-    "category": 6,
-    "tags": [{"id": 1}, {"id": 2 }]
+{
+    "title": "Bike to sell",
+    "description":
+      "My bike is blue, working fine. I'm selling it because I've got a new one",
+    "owner": "bike.seller@gmail.com",
+    "price": 1500,
+    "imageUrl":"https://images.lecho.be/view?iid=dc:113129565&context=ONLINE&ratio=16/9&width=640&u=1508242455000",
+    "location": "Paris",
+    "createdAt": "2023-09-05T10:13:14.755Z",
+    "category" : 12
   }
-]
+
+# [
+#   {
+#     "title": "Classic Literature Collection 2",
+#     "description": "Rare collection of classic literature books, including works by famous French authors.",
+#     "owner": "bookcollector@gmail.com",
+#     "price": 250,
+#     "picture": "https://example.com/books-image.jpg",
+#     "location": "Nice",
+#     "createdAt": "2023-10-07T14:45:00.000Z",
+#     "category": 6,
+#     "tags": [{"id": 1}, {"id": 2 }]
+#   }
+# ]
 
 # [
 #   {

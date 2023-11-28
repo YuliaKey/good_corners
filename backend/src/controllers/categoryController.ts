@@ -52,18 +52,20 @@ const categoryController = {
       res.send("Category has been deleted");
     } catch (error) {
       console.log(error);
+      res.status(400).send("Error occurred while  deleting category");
     }
   },
 
   put: async (req: Request, res: Response) => {
     try {
-      const oldCategory = await Category.findOneByOrFail({
-        id: req.body.idToEdit,
-      });
-      Category.save({ ...oldCategory, ...req.body.newCategory });
+      // const oldCategory = await Category.findOneByOrFail({
+      //   id: req.body.idToEdit,
+      // });
+      await Category.update({ id: req.body.id }, { ...req.body.newCategory });
       res.send("Category has been updated");
     } catch (error) {
       console.log(error);
+      res.status(400).send("An error occured while updating category");
     }
   },
 };

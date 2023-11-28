@@ -3,25 +3,42 @@ import Category, { CategoryType } from "./Category";
 import React, { useEffect, useState } from "react";
 import axios from "axios";
 import { useRouter } from "next/router";
+import { gql, useQuery } from "@apollo/client";
+import { GET_ALL_CATEGORIES } from "@/graphql/queries/queries";
 
 const Header = () => {
   const router = useRouter();
   const [category, setCategory] = useState<CategoryType[]>([]);
   const [selectedCategory, setSelectedCategory] = useState<string | null>(null);
 
+  const { loading, error, data } = useQuery(GET_ALL_CATEGORIES);
+
+  console.log("here", data);
+
   const handleCategoryClick = (categoryName: string) => {
     setSelectedCategory(categoryName);
   };
 
   useEffect(() => {
-    const fetchCategory = async () => {
-      const result = await axios.get<CategoryType[]>(
-        "http://localhost:4000/category"
-      );
-      setCategory(result.data);
-    };
-    fetchCategory();
-  }, []);
+    if (data) {
+      setCategory(data.allCategories);
+    }
+  }, [data]);
+
+  if (loading) return <p>Loading...</p>;
+  if (error) return <p>Error : {error.message}</p>;
+
+  // example of useing axios
+  // useEffect(() => {
+  //   const fetchCategory = async () => {
+  //     const result = await axios.get<CategoryType[]>(
+  //       "http://localhost:4000/category"
+  //     );
+  //     setCategory(result.data);
+  //   };
+  //   fetchCategory();
+  // }, []);
+
   return (
     <header className="header">
       <div className="main-menu">

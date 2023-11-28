@@ -1,4 +1,7 @@
 import { CategoryType } from "@/components/Category";
+import { CREATE_NEW_AD } from "@/graphql/mutations/mutations";
+import { GET_ALL_CATEGORIES } from "@/graphql/queries/queries";
+import { useQuery, useMutation } from "@apollo/client";
 import axios from "axios";
 import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
@@ -17,6 +20,7 @@ type Inputs = {
 
 const NewAd = () => {
   const router = useRouter();
+  const { loading, error, data } = useQuery(GET_ALL_CATEGORIES);
   const {
     register,
     handleSubmit,
@@ -27,6 +31,11 @@ const NewAd = () => {
 
   const [categories, setCategories] = useState<CategoryType[]>([]);
 
+  const [
+    createNewAd,
+    { data: createAdData, loading: createAdLoading, error: createAdError },
+  ] = useMutation(CREATE_NEW_AD);
+
   const onSubmit: SubmitHandler<Inputs> = async (data) => {
     console.log(data);
     try {
@@ -35,8 +44,11 @@ const NewAd = () => {
 
       // Ensure the "category" field is a number
       data.category = Number(data.category);
-      // Make a POST request to the server with form data
-      const result = await axios.post("http://localhost:4000/ad", data);
+      // Make a POST request to the server with form data using axios
+      // const result = await axios.post("http://localhost:4000/ad", data);
+      console.log("data form", data);
+
+      const result = await createNewAd({ variables: { adData: data } });
       console.log("result", result);
       reset();
       router.push("/");
@@ -66,18 +78,25 @@ const NewAd = () => {
   };
 
   useEffect(() => {
-    const fetchCategories = async () => {
-      try {
-        const result = await axios.get<CategoryType[]>(
-          "http://localhost:4000/category"
-        );
-        setCategories(result.data);
-      } catch (error) {
-        console.log(error);
-      }
-    };
-    fetchCategories();
-  }, []);
+    if (data) {
+      setCategories(data.allCategories);
+    }
+  }, [data]);
+  // fetch categories using axios
+  // useEffect(() => {
+  //   const fetchCategories = async () => {
+  //     try {
+  //       const result = await axios.get<CategoryType[]>(
+  //         "http://localhost:4000/category"
+  //       );
+  //       setCategories(result.data);
+  //     } catch (error) {
+  //       console.log(error);
+  //     }
+  //   };
+  //   fetchCategories();
+  // }, []);
+
   return (
     <form
       // onSubmit={(e) => {

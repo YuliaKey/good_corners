@@ -56,7 +56,6 @@ const EditAd = () => {
         newAd: data,
       });
       router.push("/");
-
       toast.success(result.data, {
         position: "top-right",
         autoClose: 5000,
