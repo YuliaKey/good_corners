@@ -16,7 +16,7 @@ function App({ Component, pageProps }: AppProps) {
     <ApolloProvider client={client}>
       <ToastContainer />
       <Layout>
-        <Component {...pageProps} />;
+        <Component {...pageProps} />
       </Layout>
     </ApolloProvider>
   );
