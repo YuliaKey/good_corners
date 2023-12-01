@@ -38,10 +38,8 @@ const NewAd = () => {
     { data: createAdData, loading: createAdLoading, error: createAdError },
   ] = useMutation(CREATE_NEW_AD);
 
-  console.log("image", imageURL);
-
   const onSubmit: SubmitHandler<Inputs> = async (data) => {
-    console.log(data);
+    console.log("form data", data);
     try {
       // Parse the "price" field to a number
       data.price = Number(data.price);

@@ -20,6 +20,29 @@ export class AdResolver {
     }
   }
 
+  @Query(() => Ad)
+  async getAdById(@Arg("id") id: number): Promise<Ad> {
+    try {
+      const result = await Ad.findOne({
+        where: {
+          id: id,
+        },
+        relations: { category: true },
+      });
+
+      if (!result) {
+        throw new Error(`Ad with ID ${id} not found`);
+      }
+
+      console.log(result);
+
+      return result;
+    } catch (err) {
+      console.error("Error", err);
+      throw new Error("An error occurred while reading one ad");
+    }
+  }
+
   @Mutation(() => String)
   async deleteAdById(@Arg("id") id: number) {
     const adToDelete = await Ad.findOneByOrFail({

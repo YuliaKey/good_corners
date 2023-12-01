@@ -5,6 +5,8 @@ import { toast } from "react-toastify";
 import { AdCardProps } from "@/components/AdCard";
 import { useRouter } from "next/router";
 import { CategoryType } from "@/components/Category";
+import { useQuery } from "@apollo/client";
+import { GET_ALL_CATEGORIES } from "@/graphql/queries/queries";
 
 type Inputs = {
   title: string;
@@ -18,22 +20,27 @@ type Inputs = {
 
 const EditAd = () => {
   const router = useRouter();
+  const { loading, error, data } = useQuery(GET_ALL_CATEGORIES);
   const [categories, setCategories] = useState<CategoryType[]>([]);
   const [ad, setAd] = useState<AdCardProps>();
   const { register, handleSubmit, reset } = useForm<Inputs>();
 
   useEffect(() => {
-    const fetchCategories = async () => {
-      try {
-        const result = await axios.get<CategoryType[]>(
-          "http://localhost:4000/category"
-        );
-        setCategories(result.data);
-      } catch (err) {
-        console.log(err);
-      }
-    };
-    fetchCategories();
+    if (data) {
+      setCategories(data.allCategories);
+    }
+    // fetch categories using axios
+    // const fetchCategories = async () => {
+    //   try {
+    //     const result = await axios.get<CategoryType[]>(
+    //       "http://localhost:4000/category"
+    //     );
+    //     setCategories(result.data);
+    //   } catch (err) {
+    //     console.log(err);
+    //   }
+    // };
+    // fetchCategories();
     const fetchAd = async () => {
       try {
         const result = await axios.get<AdCardProps>(
@@ -47,7 +54,7 @@ const EditAd = () => {
     if (router.query.id) {
       fetchAd();
     }
-  }, [router.query.id, reset]);
+  }, [data, router.query.id, reset]);
 
   const onSubmit: SubmitHandler<Inputs> = async (data) => {
     try {
