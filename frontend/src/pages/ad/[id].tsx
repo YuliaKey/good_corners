@@ -1,26 +1,35 @@
 import { AdCardProps } from "@/components/AdCard";
+import { GET_AD_BY_ID } from "@/graphql/queries/queries";
+import { useQuery } from "@apollo/client";
 import axios from "axios";
 import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
 
 const AdDetails = () => {
   const router = useRouter();
+  const { data: adData } = useQuery(GET_AD_BY_ID, {
+    variables: { id: parseInt(router.query.id as string) },
+  });
   const [ad, setAd] = useState<AdCardProps>();
 
   useEffect(() => {
-    const fetchAdData = async () => {
-      try {
-        const result = await axios.get(
-          `http://localhost:4000/ad/${router.query.id}`
-        );
-        console.log(result);
-        setAd(result.data);
-      } catch (error) {
-        console.error("Error fetching ad details:", error);
-      }
-    };
-    fetchAdData();
-  }, [router.query.id]);
+    if (router.query.id && adData && adData.getAdById) {
+      setAd(adData.getAdById);
+    }
+    // fetch ad data using axios
+    //   const fetchAdData = async () => {
+    //     try {
+    //       const result = await axios.get(
+    //         `http://localhost:4000/ad/${router.query.id}`
+    //       );
+    //       console.log(result);
+    //       setAd(result.data);
+    //     } catch (error) {
+    //       console.error("Error fetching ad details:", error);
+    //     }
+    //   };
+    //   fetchAdData();
+  }, [adData, router.query.id]);
 
   return (
     <div>
@@ -35,10 +44,7 @@ const AdDetails = () => {
           <hr className="separator" />
           <div className="ad-details-owner">
             Annoncée publiée par <b>{ad?.owner}</b>{" "}
-            {ad?.createdAt
-              ? ad.createdAt.toLocaleString()
-              : "Date not available"}
-            .
+            {ad?.createdAt ? `${ad.createdAt}` : "Date not available"}
           </div>
           <a
             href={`mailto:${ad?.owner}`}

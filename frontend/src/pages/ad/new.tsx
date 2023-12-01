@@ -33,64 +33,79 @@ const NewAd = () => {
   const [imageURL, setImageURL] = useState<String>();
   const [categories, setCategories] = useState<CategoryType[]>([]);
 
+  console.log("file", file);
+
   const [
     createNewAd,
     { data: createAdData, loading: createAdLoading, error: createAdError },
   ] = useMutation(CREATE_NEW_AD);
 
   const onSubmit: SubmitHandler<Inputs> = async (data) => {
-    console.log("form data", data);
-    try {
-      // Parse the "price" field to a number
-      data.price = Number(data.price);
+    if (imageURL === undefined) {
+      toast.error("Please upload an image first", {
+        position: "top-right",
+        autoClose: 5000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+        theme: "colored",
+      });
+    } else {
+      console.log("form data", data);
+      try {
+        // Parse the "price" field to a number
+        data.price = Number(data.price);
 
-      // Ensure the "category" field is a number
-      data.category = Number(data.category);
-      // Make a POST request to the server with form data using axios
-      // const result = await axios.post("http://localhost:4000/ad", data);
-      console.log("data form", data);
+        // Ensure the "category" field is a number
+        data.category = Number(data.category);
+        // Make a POST request to the server with form data using axios
+        // const result = await axios.post("http://localhost:4000/ad", data);
+        console.log("data form", data);
 
-      const result = await createNewAd({
-        variables: {
-          adData: {
-            title: data.title,
-            description: data.description,
-            imageUrl: "http://localhost:8000" + imageURL,
-            location: data.location,
-            price: data.price,
-            owner: data.owner,
-            category: data.category,
+        const result = await createNewAd({
+          variables: {
+            adData: {
+              title: data.title,
+              description: data.description,
+              imageUrl: "http://localhost:8000" + imageURL,
+              location: data.location,
+              price: data.price,
+              owner: data.owner,
+              category: data.category,
+            },
           },
-        },
-      });
-      console.log("result", result);
-      reset();
-      router.push("/");
-      setImageURL(undefined);
-      setFile(undefined);
-      toast.success("New ad was added", {
-        position: "top-right",
-        autoClose: 5000,
-        hideProgressBar: false,
-        closeOnClick: true,
-        pauseOnHover: true,
-        draggable: true,
-        progress: undefined,
-        theme: "colored",
-      });
-    } catch (err: any) {
-      console.error(err);
-      toast.error(err.message, {
-        position: "top-right",
-        autoClose: 5000,
-        hideProgressBar: false,
-        closeOnClick: true,
-        pauseOnHover: true,
-        draggable: true,
-        progress: undefined,
-        theme: "colored",
-      });
-      console.error("Error submitting form:", err);
+        });
+        console.log("result", result);
+        reset();
+        router.push("/");
+        setImageURL(undefined);
+        setFile(undefined);
+        toast.success("New ad was added", {
+          position: "top-right",
+          autoClose: 5000,
+          hideProgressBar: false,
+          closeOnClick: true,
+          pauseOnHover: true,
+          draggable: true,
+          progress: undefined,
+          theme: "colored",
+        });
+      } catch (err: any) {
+        console.error(err);
+        toast.error(err.message, {
+          position: "top-right",
+          autoClose: 5000,
+          hideProgressBar: false,
+          closeOnClick: true,
+          pauseOnHover: true,
+          draggable: true,
+          progress: undefined,
+          theme: "colored",
+        });
+        console.error("Error submitting form:", err);
+      }
     }
   };
 
@@ -118,32 +133,21 @@ const NewAd = () => {
     <>
       <input
         type="file"
-        onChange={(e) => {
+        onChange={async (e) => {
           if (e.target.files) {
             setFile(e.target.files[0]);
-          }
-        }}
-      />
-      <button
-        onClick={async (event) => {
-          event.preventDefault();
-          if (file) {
             const url = "http://localhost:8000/upload";
             const formData = new FormData();
-            formData.append("file", file, file.name);
+            formData.append("file", e.target.files[0], e.target.files[0].name);
             try {
               const response = await axios.post(url, formData);
               setImageURL(response.data.filename);
             } catch (err) {
               console.log("error", err);
             }
-          } else {
-            alert("select a file to upload");
           }
         }}
-      >
-        Upload Image
-      </button>
+      />
       {imageURL ? (
         <>
           <br />

@@ -91,8 +91,6 @@ const RecentAds = () => {
       // ads={recentAds}
       ads={data.getAllAds}
       title="Recent Ads"
-      buttonDelete
-      buttonEdit
       onClickDelete={(adId) => deleteAd(adId)}
       onClickEdit={handleEditAd}
     />

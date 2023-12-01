@@ -25,6 +25,7 @@ export const GET_AD_BY_ID = gql`
         id
         name
       }
+      createdAt
     }
   }
 `;

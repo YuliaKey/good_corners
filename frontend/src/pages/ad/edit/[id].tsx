@@ -36,7 +36,7 @@ const EditAd = () => {
     if (data) {
       setCategories(data.allCategories);
     }
-    console.log("adData", adData);
+
     if (router.query.id && adData && adData.getAdById) {
       setAd(adData.getAdById);
     }
