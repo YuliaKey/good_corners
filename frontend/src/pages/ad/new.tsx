@@ -57,7 +57,7 @@ const NewAd = () => {
           adData: {
             title: data.title,
             description: data.description,
-            imageUrl: imageURL,
+            imageUrl: "http://localhost:8000" + imageURL,
             location: data.location,
             price: data.price,
             owner: data.owner,
@@ -68,7 +68,9 @@ const NewAd = () => {
       console.log("result", result);
       reset();
       router.push("/");
-      toast.success(result.data, {
+      setImageURL(undefined);
+      setFile(undefined);
+      toast.success("New ad was added", {
         position: "top-right",
         autoClose: 5000,
         hideProgressBar: false,
@@ -79,7 +81,8 @@ const NewAd = () => {
         theme: "colored",
       });
     } catch (err: any) {
-      toast.error(err.response.data, {
+      console.error(err);
+      toast.error(err.message, {
         position: "top-right",
         autoClose: 5000,
         hideProgressBar: false,
