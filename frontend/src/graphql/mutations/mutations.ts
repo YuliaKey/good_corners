@@ -7,3 +7,11 @@ export const CREATE_NEW_AD = gql`
     }
   }
 `;
+
+export const UPDATE_AD = gql`
+  mutation Mutation($adData: AdUpdateInput!, $updateAdId: Float!) {
+    updateAd(adData: $adData, id: $updateAdId) {
+      id
+    }
+  }
+`;

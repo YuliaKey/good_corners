@@ -5,8 +5,9 @@ import { toast } from "react-toastify";
 import { AdCardProps } from "@/components/AdCard";
 import { useRouter } from "next/router";
 import { CategoryType } from "@/components/Category";
-import { useQuery } from "@apollo/client";
-import { GET_ALL_CATEGORIES } from "@/graphql/queries/queries";
+import { useMutation, useQuery } from "@apollo/client";
+import { GET_AD_BY_ID, GET_ALL_CATEGORIES } from "@/graphql/queries/queries";
+import { UPDATE_AD } from "@/graphql/mutations/mutations";
 
 type Inputs = {
   title: string;
@@ -21,13 +22,23 @@ type Inputs = {
 const EditAd = () => {
   const router = useRouter();
   const { loading, error, data } = useQuery(GET_ALL_CATEGORIES);
+  const { data: adData } = useQuery(GET_AD_BY_ID, {
+    variables: { id: parseInt(router.query.id as string) },
+  });
+  const [updateAd] = useMutation(UPDATE_AD);
+
   const [categories, setCategories] = useState<CategoryType[]>([]);
   const [ad, setAd] = useState<AdCardProps>();
+
   const { register, handleSubmit, reset } = useForm<Inputs>();
 
   useEffect(() => {
     if (data) {
       setCategories(data.allCategories);
+    }
+    console.log("adData", adData);
+    if (router.query.id && adData && adData.getAdById) {
+      setAd(adData.getAdById);
     }
     // fetch categories using axios
     // const fetchCategories = async () => {
@@ -41,29 +52,47 @@ const EditAd = () => {
     //   }
     // };
     // fetchCategories();
-    const fetchAd = async () => {
-      try {
-        const result = await axios.get<AdCardProps>(
-          `http://localhost:4000/ad/${router.query.id}`
-        );
-        setAd(result.data);
-      } catch (err) {
-        console.log(err);
-      }
-    };
-    if (router.query.id) {
-      fetchAd();
-    }
-  }, [data, router.query.id, reset]);
+
+    // fetchAd using axios
+    //   const fetchAd = async () => {
+    //     try {
+    //       const result = await axios.get<AdCardProps>(
+    //         `http://localhost:4000/ad/${router.query.id}`
+    //       );
+    //       setAd(result.data);
+    //     } catch (err) {
+    //       console.log(err);
+    //     }
+    //   };
+    //   if (router.query.id) {
+    //     fetchAd();
+    //   }
+  }, [adData, data, router.query.id, reset]);
 
   const onSubmit: SubmitHandler<Inputs> = async (data) => {
     try {
-      const result = await axios.put("http://localhost:4000/ad", {
-        idToEdit: router.query.id,
-        newAd: data,
+      // use axios to update ad
+      // const result = await axios.put("http://localhost:4000/ad", {
+      //   idToEdit: router.query.id,
+      //   newAd: data,
+      // });
+
+      // Parse the "price" field to a number
+      data.price = Number(data.price);
+
+      // Ensure the "category" field is a number
+      data.category = Number(data.category);
+
+      console.log("form data", data);
+      await updateAd({
+        variables: {
+          adData: data,
+          updateAdId: parseInt(router.query.id as string),
+        },
       });
+      console.log(adData, data);
       router.push("/");
-      toast.success(result.data, {
+      toast.success("Ad updated successfully", {
         position: "top-right",
         autoClose: 5000,
         hideProgressBar: false,
@@ -74,7 +103,8 @@ const EditAd = () => {
         theme: "colored",
       });
     } catch (err: any) {
-      toast.error(err.response.data, {
+      console.log(err);
+      toast.error(err.message, {
         position: "top-right",
         autoClose: 5000,
         hideProgressBar: false,
@@ -107,7 +137,7 @@ const EditAd = () => {
         <input
           defaultValue={ad?.price}
           className="text-field"
-          {...register("price")}
+          {...register("price", { valueAsNumber: true })}
         />
       </label>
       <br />
@@ -147,7 +177,10 @@ const EditAd = () => {
         />
       </label>
       <br />
-      <select defaultValue={ad?.category.id} {...register("category")}>
+      <select
+        defaultValue={ad?.category.id}
+        {...register("category", { valueAsNumber: true })}
+      >
         {categories.map((category) => (
           <option
             // selected={category.id == ad?.category?.id}
