@@ -39,14 +39,14 @@ const RecentAds = () => {
   const { loading, error, data, refetch } = useQuery(GET_ALL_ADS);
   const [deleteAdMutation] = useMutation(DELETE_AD);
 
+  const [recentAds, setRecentAds] = useState<AdCardProps[]>([]);
+
   console.log("here", data);
 
   if (loading) return <p>Loading...</p>;
   if (error) return <p>Error : {error.message}</p>;
 
   // use of asios
-  // const [recentAds, setRecentAds] = useState<AdCardProps[]>([]);
-
   // useEffect(() => {
   //   const fetchData = async () => {
   //     try {
@@ -76,7 +76,7 @@ const RecentAds = () => {
       // use of axios
       // await axios.delete(`http://localhost:4000/ad/${adId}`);
       // // Update your component's state to remove the deleted ad from recentAds
-      // setRecentAds((ads) => ads.filter((ad) => ad.id !== adId));
+      setRecentAds((ads) => ads.filter((ad) => ad.id !== adId));
     } catch (error) {
       console.error("Error deleting ad:", error);
     }
@@ -90,8 +90,11 @@ const RecentAds = () => {
     <DisplayAds
       // ads={recentAds}
       ads={data.getAllAds}
-      title="Recent Ads"
-      onClickDelete={(adId) => deleteAd(adId)}
+      title={"Recent Ads"}
+      onClickDelete={(adId) => {
+        router.push(`/`);
+        deleteAd(adId);
+      }}
       onClickEdit={handleEditAd}
     />
   );

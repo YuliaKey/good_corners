@@ -52,7 +52,7 @@ export class UserResolver {
     }
   }
 
-  @Mutation(() => String)
+  @Query(() => String)
   async login(@Arg("userData") { email, password }: UserInput) {
     try {
       const user = await User.findOneByOrFail({ email });
@@ -60,7 +60,7 @@ export class UserResolver {
       if (await argon2.verify(user.hashedPassword, password)) {
         // User successfully authenticated, generate a JWT
         const token = jwt.sign({ email: user.email }, "mysupersecretkey", {
-          expiresIn: "2h", // Token expires in 1 hour, adjust as needed
+          expiresIn: "100h", // Token expires in 1 hour, adjust as needed
         });
 
         return token; // Return the generated JWT

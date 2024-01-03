@@ -1,6 +1,6 @@
 import { Like } from "typeorm";
 import { Ad } from "../entities/ad";
-import { Resolver, Query, Mutation, Arg } from "type-graphql";
+import { Resolver, Query, Mutation, Arg, Authorized } from "type-graphql";
 import { AdInput } from "../inputs/Ad";
 import { AdUpdateInput } from "../inputs/AdUpdate";
 
@@ -53,6 +53,7 @@ export class AdResolver {
     return "The ad has been deleted";
   }
 
+  @Authorized()
   @Mutation(() => Ad)
   async createNewAd(@Arg("adData") adData: AdInput) {
     if (adData.tags) {

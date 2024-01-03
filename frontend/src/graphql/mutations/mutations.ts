@@ -15,3 +15,9 @@ export const UPDATE_AD = gql`
     }
   }
 `;
+
+export const REGISTER = gql`
+  mutation Mutation($newUserData: UserInput!) {
+    register(newUserData: $newUserData)
+  }
+`;

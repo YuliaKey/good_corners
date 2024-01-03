@@ -20,6 +20,7 @@ export type AdCardProps = {
 };
 
 type AdCardComponentProps = AdCardProps & {
+  onCardClick?: () => void;
   onClickDelete?: (adId: number) => void;
   onClickEdit?: (adId: number) => void;
 };
@@ -31,34 +32,33 @@ const AdCard = ({
   price,
   onClickDelete,
   onClickEdit,
+  onCardClick,
 }: AdCardComponentProps) => {
-  const handleEditClick = (event: React.MouseEvent<HTMLButtonElement>) => {
-    event.stopPropagation(); // Prevent the event from reaching the parent Link
+  const handleEditClick = (event?: React.MouseEvent<HTMLButtonElement>) => {
+    event?.stopPropagation(); // Prevent the event from reaching the parent Link
     onClickEdit && onClickEdit(id);
   };
 
-  const handleDeleteClick = (event: React.MouseEvent<HTMLButtonElement>) => {
-    event.stopPropagation(); // Prevent the event from reaching the parent Link
+  const handleDeleteClick = (event?: React.MouseEvent<HTMLButtonElement>) => {
+    event?.stopPropagation(); // Prevent the event from reaching the parent Link
     onClickDelete && onClickDelete(id);
   };
 
   return (
-    <div className={styles.container}>
-      <Link className={styles.link} href={`/ad/${id}`}>
-        <img alt="ad-card-image" className={styles.image} src={imageUrl} />
-        <div className={styles.text}>
-          <div className={styles.title}>{title}</div>
-          <div>{price} €</div>
-        </div>
-        <div className="flex">
-          {onClickEdit ? (
-            <Button title="Modifier" onClick={() => handleEditClick} />
-          ) : null}
-          {onClickDelete ? (
-            <Button title="Supprimer" onClick={() => handleDeleteClick} />
-          ) : null}
-        </div>
-      </Link>
+    <div className={styles.container} onClick={onCardClick}>
+      <img alt="ad-card-image" className={styles.image} src={imageUrl} />
+      <div className={styles.text}>
+        <div className={styles.title}>{title}</div>
+        <div>{price} €</div>
+      </div>
+      <div className="flex">
+        {onClickEdit ? (
+          <Button title="Modifier" onClick={handleEditClick} />
+        ) : null}
+        {onClickDelete ? (
+          <Button title="Supprimer" onClick={handleDeleteClick} />
+        ) : null}
+      </div>
     </div>
   );
 };

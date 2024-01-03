@@ -29,3 +29,9 @@ export const GET_AD_BY_ID = gql`
     }
   }
 `;
+
+export const LOGIN = gql`
+  query Query($userData: UserInput!) {
+    login(userData: $userData)
+  }
+`;

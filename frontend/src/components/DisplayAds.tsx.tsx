@@ -1,6 +1,7 @@
 import Link from "next/link";
 import AdCard, { AdCardProps } from "./AdCard";
 import Button from "./Button";
+import { useRouter } from "next/router";
 
 type DisplayAdsType = {
   ads: AdCardProps[];
@@ -15,13 +16,15 @@ const DisplayAds = ({
   onClickDelete,
   onClickEdit,
 }: DisplayAdsType) => {
+  const router = useRouter();
+
   return (
     <>
       <h2>{title}</h2>
       <section className="recent-ads">
-        {ads.map((ad) => (
-          <div key={ad.id}>
-            <Link href={`/ad/${ad.id}`}>
+        {!!ads &&
+          ads.map((ad) => (
+            <div key={ad.id}>
               <AdCard
                 id={ad.id}
                 imageUrl={ad.imageUrl}
@@ -35,10 +38,13 @@ const DisplayAds = ({
                 createdAt={ad.createdAt}
                 onClickDelete={onClickDelete}
                 onClickEdit={onClickEdit}
+                onCardClick={(event?: React.MouseEvent<HTMLButtonElement>) => {
+                  event?.stopPropagation();
+                  router.push(`/ad/${ad.id}`);
+                }}
               />
-            </Link>
-          </div>
-        ))}
+            </div>
+          ))}
       </section>
     </>
   );

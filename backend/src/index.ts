@@ -28,6 +28,13 @@ const start = async () => {
 
   const schema = await buildSchema({
     resolvers: [CategoryResolver, AdResolver, TagResolver, UserResolver],
+    authChecker: ({ context }) => {
+      if (context.email) {
+        return true;
+      } else {
+        return false;
+      }
+    },
   });
 
   const server = new ApolloServer({
@@ -42,7 +49,8 @@ const start = async () => {
       // console.log(token);
       if (token) {
         const payload = jwt.verify(token, "mysupersecretkey");
-        console.log("payload", payload);
+        // console.log("payload", payload);
+        return payload;
       }
       return "This is a fake context";
     },
