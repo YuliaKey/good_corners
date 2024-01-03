@@ -1,6 +1,7 @@
 import { User } from "../entities/user";
 import { Resolver, Query, Mutation, Arg, InputType, Field } from "type-graphql";
 import * as argon2 from "argon2";
+import * as jwt from "jsonwebtoken";
 
 @InputType({ description: "New recipe data" })
 class UserInput implements Partial<User> {
@@ -56,10 +57,15 @@ export class UserResolver {
     try {
       const user = await User.findOneByOrFail({ email });
 
-      if ((await argon2.verify(user.hashedPassword, password)) === false) {
-        throw new Error("Invalid password");
+      if (await argon2.verify(user.hashedPassword, password)) {
+        // User successfully authenticated, generate a JWT
+        const token = jwt.sign({ email: user.email }, "mysupersecretkey", {
+          expiresIn: "2h", // Token expires in 1 hour, adjust as needed
+        });
+
+        return token; // Return the generated JWT
       } else {
-        return "correct credentials";
+        throw new Error("Invalid password");
       }
     } catch (err) {
       console.log("Error authenticating user:", err);

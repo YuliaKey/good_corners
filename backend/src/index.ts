@@ -8,6 +8,7 @@ import "reflect-metadata";
 import dataSource from "./config/db";
 import { buildSchema } from "type-graphql";
 import { startStandaloneServer } from "@apollo/server/standalone";
+import * as jwt from "jsonwebtoken";
 
 import { CategoryResolver } from "./resolvers/Category";
 import { ApolloServer } from "@apollo/server";
@@ -33,7 +34,19 @@ const start = async () => {
     schema,
   });
 
-  const { url } = await startStandaloneServer(server, {});
+  const { url } = await startStandaloneServer(server, {
+    listen: { port: 4000 },
+    context: async ({ req }) => {
+      // console.log("headers", req.headers.authorization);
+      const token = req.headers.authorization?.split("Bearer ")[1];
+      // console.log(token);
+      if (token) {
+        const payload = jwt.verify(token, "mysupersecretkey");
+        console.log("payload", payload);
+      }
+      return "This is a fake context";
+    },
+  });
 
   console.log(`🚀  Server ready at: ${url}`);
 };
