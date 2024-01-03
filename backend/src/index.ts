@@ -14,6 +14,7 @@ import { ApolloServer } from "@apollo/server";
 import { AdResolver } from "./resolvers/Ad";
 import { TagResolver } from "./resolvers/Tag";
 import { Category } from "./entities/category";
+import { UserResolver } from "./resolvers/User";
 
 const start = async () => {
   await dataSource.initialize();
@@ -25,7 +26,7 @@ const start = async () => {
   }
 
   const schema = await buildSchema({
-    resolvers: [CategoryResolver, AdResolver, TagResolver],
+    resolvers: [CategoryResolver, AdResolver, TagResolver, UserResolver],
   });
 
   const server = new ApolloServer({
