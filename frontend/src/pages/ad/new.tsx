@@ -20,6 +20,10 @@ type Inputs = {
 
 const NewAd = () => {
   const router = useRouter();
+  if (localStorage.getItem("jwt") === null) {
+    console.log("redirect to login page");
+    router.push("/login");
+  }
   const { loading, error, data } = useQuery(GET_ALL_CATEGORIES);
   const {
     register,
@@ -72,7 +76,6 @@ const NewAd = () => {
               imageUrl: "http://localhost:8000" + imageURL,
               location: data.location,
               price: data.price,
-              owner: data.owner,
               category: data.category,
             },
           },
@@ -214,7 +217,7 @@ const NewAd = () => {
             {errors.location && <span>This field is required</span>}
           </label>
         </div>
-        <div>
+        {/* <div>
           <label>
             Author : <br />
             <input
@@ -223,7 +226,7 @@ const NewAd = () => {
             />
             {errors.owner && <span>This field is required</span>}
           </label>
-        </div>
+        </div> */}
         {/* <div>
           <label>
             Image : <br />

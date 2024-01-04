@@ -1,12 +1,16 @@
 import Link from "next/link";
 import Category, { CategoryType } from "./Category";
-import React, { useEffect, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import axios from "axios";
 import { useRouter } from "next/router";
 import { gql, useQuery } from "@apollo/client";
 import { GET_ALL_CATEGORIES } from "@/graphql/queries/queries";
+import { AuthContext } from "@/pages/_app";
+import Button from "./Button";
 
 const Header = () => {
+  const { isLoggedIn } = useContext(AuthContext);
+  console.log("isLoggedIn", isLoggedIn);
   const router = useRouter();
   const [category, setCategory] = useState<CategoryType[]>([]);
   const [selectedCategory, setSelectedCategory] = useState<string | null>(null);
@@ -81,10 +85,20 @@ const Header = () => {
             </svg>
           </button>
         </form>
-        <Link href="/ad/new" className="button link-button">
-          <span className="mobile-short-label">Publier</span>
-          <span className="desktop-long-label">Publier une annonce</span>
-        </Link>
+        {isLoggedIn ? (
+          <>
+            <Link href="/ad/new" className="button link-button">
+              <span className="mobile-short-label">Publier</span>
+              <span className="desktop-long-label">Publier une annonce</span>
+            </Link>
+            <Button title="Logout" />
+          </>
+        ) : (
+          <Link href="/login" className="button link-button">
+            <span className="mobile-short-label">Login</span>
+            <span className="desktop-long-label">Login</span>
+          </Link>
+        )}
       </div>
       <nav className="categories-navigation">
         {category.map((category) => (

@@ -63,6 +63,7 @@ export class AdResolver {
     if (adData.tags) {
       return await Ad.save({
         ...adData,
+        owner: ctx.email,
         category: { id: adData.category },
         tags: adData.tags.map((el) => ({ id: el })),
       });

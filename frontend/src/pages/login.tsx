@@ -1,8 +1,14 @@
 import { LOGIN } from "@/graphql/queries/queries";
 import { useLazyQuery } from "@apollo/client";
+import { useRouter } from "next/router";
+import { AuthContext } from "./_app";
+import { useContext } from "react";
 
 const LoginPage = () => {
+  const { setIsLoggedIn } = useContext(AuthContext);
+  const router = useRouter();
   const [handleLogin, { data, loading, error }] = useLazyQuery(LOGIN);
+
   return (
     <div>
       <p>Login page</p>
@@ -23,6 +29,8 @@ const LoginPage = () => {
           });
           // console.log("result", result.data.login);
           localStorage.setItem("jwt", result.data.login);
+          setIsLoggedIn(true);
+          router.back();
         }}
         className="text-field-with-button"
       >
