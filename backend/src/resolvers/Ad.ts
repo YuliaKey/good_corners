@@ -1,6 +1,6 @@
 import { Like } from "typeorm";
 import { Ad } from "../entities/ad";
-import { Resolver, Query, Mutation, Arg, Authorized } from "type-graphql";
+import { Resolver, Query, Mutation, Arg, Authorized, Ctx } from "type-graphql";
 import { AdInput } from "../inputs/Ad";
 import { AdUpdateInput } from "../inputs/AdUpdate";
 
@@ -55,7 +55,11 @@ export class AdResolver {
 
   @Authorized()
   @Mutation(() => Ad)
-  async createNewAd(@Arg("adData") adData: AdInput) {
+  async createNewAd(
+    @Arg("adData") adData: AdInput,
+    @Ctx() ctx: { email: string }
+  ) {
+    console.log("context", ctx);
     if (adData.tags) {
       return await Ad.save({
         ...adData,
@@ -66,6 +70,7 @@ export class AdResolver {
       // TODO make tags optionnal in creation
       return await Ad.save({
         ...adData,
+        owner: ctx.email,
         category: { id: adData.category },
         tags: [],
       });
