@@ -35,3 +35,22 @@ export const LOGIN = gql`
     login(userData: $userData)
   }
 `;
+
+export const GET_AUTH_INFO = gql`
+  query WhoAmI {
+    whoAmI {
+      isLoggedIn
+      email
+      role
+    }
+  }
+`;
+
+export const GET_ALL_USERS = gql`
+  query GetAllUsers {
+    getAllUsers {
+      email
+      id
+    }
+  }
+`;

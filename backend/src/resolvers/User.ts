@@ -7,9 +7,21 @@ import {
   InputType,
   Field,
   Authorized,
+  Ctx,
+  ObjectType,
 } from "type-graphql";
 import * as argon2 from "argon2";
 import * as jwt from "jsonwebtoken";
+
+@ObjectType()
+class UserInfo {
+  @Field()
+  isLoggedIn: boolean;
+  @Field({ nullable: true })
+  email: string;
+  @Field({ nullable: true })
+  role: string;
+}
 
 @InputType({ description: "New recipe data" })
 class UserInput implements Partial<User> {
@@ -22,6 +34,7 @@ class UserInput implements Partial<User> {
 
 @Resolver()
 export class UserResolver {
+  @Authorized("admin")
   @Query(() => [User])
   async allUsers() {
     const result = await User.find();
@@ -69,9 +82,7 @@ export class UserResolver {
       if (await argon2.verify(user.hashedPassword, password)) {
         // User successfully authenticated, generate a JWT
         payload = { email: user.email, role: user.role };
-        const token = jwt.sign(payload, "mysupersecretkey", {
-          expiresIn: "1h", // Token expires in 1 hour, adjust as needed
-        });
+        const token = jwt.sign(payload, "mysupersecretkey");
 
         return token; // Return the generated JWT
       } else {
@@ -87,5 +98,24 @@ export class UserResolver {
   @Query(() => String)
   async adminQuery() {
     return "you are admin";
+  }
+
+  @Query(() => UserInfo)
+  async whoAmI(@Ctx() ctx: { email: string; role: string }) {
+    if (ctx.email !== undefined) {
+      return { ...ctx, isLoggedIn: true };
+    } else {
+      return { isLoggedIn: false };
+    }
+  }
+
+  @Authorized("admin")
+  @Mutation(() => String)
+  async deleteUser(@Arg("userId") userId: string) {
+    const userToDelete = await User.findOneByOrFail({
+      id: Number.parseInt(userId),
+    });
+    await userToDelete.remove();
+    return "user removed";
   }
 }

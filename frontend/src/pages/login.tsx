@@ -1,19 +1,25 @@
 import { LOGIN } from "@/graphql/queries/queries";
 import { useLazyQuery } from "@apollo/client";
 import { useRouter } from "next/router";
-import { AuthContext } from "./_app";
 import { useContext } from "react";
+import { UserContext } from "@/components/Layout";
 
 const LoginPage = () => {
-  const { setIsLoggedIn } = useContext(AuthContext);
+  const authInfo = useContext(UserContext);
   const router = useRouter();
-  const [handleLogin, { data, loading, error }] = useLazyQuery(LOGIN);
+  const [handleLogin] = useLazyQuery(LOGIN, {
+    async onCompleted(data) {
+      localStorage.setItem("jwt", data.login);
+      authInfo.refetchLogin();
+      router.push("/");
+    },
+  });
 
   return (
     <div>
       <p>Login page</p>
       <form
-        onSubmit={async (e) => {
+        onSubmit={(e) => {
           e.preventDefault();
           const form = e.target;
           const formData = new FormData(form as HTMLFormElement);
@@ -22,15 +28,12 @@ const LoginPage = () => {
           const formJson = Object.fromEntries(formData.entries());
           // console.log(formJson);
 
-          const result = await handleLogin({
+          handleLogin({
             variables: {
               userData: formJson,
             },
           });
-          // console.log("result", result.data.login);
-          localStorage.setItem("jwt", result.data.login);
-          setIsLoggedIn(true);
-          router.back();
+          // router.back();
         }}
         className="text-field-with-button"
       >
@@ -38,11 +41,13 @@ const LoginPage = () => {
           name="email"
           className="text-field main-search-field"
           type="text"
+          defaultValue={"yuliia@gmail.com"}
         />
         <input
           name="password"
           className="text-field main-search-field"
           type="password"
+          defaultValue={"yuliia"}
         />
         <button className="button button-primary">Login</button>
       </form>

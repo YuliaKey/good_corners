@@ -1,16 +1,13 @@
 import Link from "next/link";
 import Category, { CategoryType } from "./Category";
 import React, { useContext, useEffect, useState } from "react";
-import axios from "axios";
 import { useRouter } from "next/router";
-import { gql, useQuery } from "@apollo/client";
-import { GET_ALL_CATEGORIES } from "@/graphql/queries/queries";
-import { AuthContext } from "@/pages/_app";
-import Button from "./Button";
+import { useQuery } from "@apollo/client";
+import { GET_ALL_CATEGORIES, GET_AUTH_INFO } from "@/graphql/queries/queries";
+import { UserContext } from "./Layout";
 
 const Header = () => {
-  const { isLoggedIn, setIsLoggedIn } = useContext(AuthContext);
-  console.log("isLoggedIn", isLoggedIn);
+  const authInfo = useContext(UserContext);
   const router = useRouter();
   const [category, setCategory] = useState<CategoryType[]>([]);
   const [selectedCategory, setSelectedCategory] = useState<string | null>(null);
@@ -85,8 +82,14 @@ const Header = () => {
             </svg>
           </button>
         </form>
-        {isLoggedIn ? (
+        {authInfo.isLoggedIn ? (
           <>
+            {authInfo.role === "admin" && (
+              <Link href="/admin/users" className="button link-button">
+                <span className="desktop-long-label">Admin Panel</span>
+                <span className="mobile-short-label">Admin</span>
+              </Link>
+            )}
             <Link href="/ad/new" className="button link-button">
               <span className="mobile-short-label">Publier</span>
               <span className="desktop-long-label">Publier une annonce</span>
@@ -95,7 +98,8 @@ const Header = () => {
               className="button button-primary"
               onClick={() => {
                 localStorage.removeItem("jwt");
-                setIsLoggedIn(false);
+                authInfo.refetchLogin();
+                router.push("/");
               }}
             >
               Logout
