@@ -9,7 +9,7 @@ import { AuthContext } from "@/pages/_app";
 import Button from "./Button";
 
 const Header = () => {
-  const { isLoggedIn } = useContext(AuthContext);
+  const { isLoggedIn, setIsLoggedIn } = useContext(AuthContext);
   console.log("isLoggedIn", isLoggedIn);
   const router = useRouter();
   const [category, setCategory] = useState<CategoryType[]>([]);
@@ -91,7 +91,15 @@ const Header = () => {
               <span className="mobile-short-label">Publier</span>
               <span className="desktop-long-label">Publier une annonce</span>
             </Link>
-            <Button title="Logout" />
+            <button
+              className="button button-primary"
+              onClick={() => {
+                localStorage.removeItem("jwt");
+                setIsLoggedIn(false);
+              }}
+            >
+              Logout
+            </button>
           </>
         ) : (
           <Link href="/login" className="button link-button">

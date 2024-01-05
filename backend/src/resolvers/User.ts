@@ -1,5 +1,13 @@
-import { User } from "../entities/user";
-import { Resolver, Query, Mutation, Arg, InputType, Field } from "type-graphql";
+import { User, UserRoleType } from "../entities/user";
+import {
+  Resolver,
+  Query,
+  Mutation,
+  Arg,
+  InputType,
+  Field,
+  Authorized,
+} from "type-graphql";
 import * as argon2 from "argon2";
 import * as jwt from "jsonwebtoken";
 
@@ -54,13 +62,15 @@ export class UserResolver {
 
   @Query(() => String)
   async login(@Arg("userData") { email, password }: UserInput) {
+    let payload: { email: string; role: UserRoleType };
     try {
       const user = await User.findOneByOrFail({ email });
 
       if (await argon2.verify(user.hashedPassword, password)) {
         // User successfully authenticated, generate a JWT
-        const token = jwt.sign({ email: user.email }, "mysupersecretkey", {
-          expiresIn: "100h", // Token expires in 1 hour, adjust as needed
+        payload = { email: user.email, role: user.role };
+        const token = jwt.sign(payload, "mysupersecretkey", {
+          expiresIn: "1h", // Token expires in 1 hour, adjust as needed
         });
 
         return token; // Return the generated JWT
@@ -71,5 +81,11 @@ export class UserResolver {
       console.log("Error authenticating user:", err);
       return "Invalid credentials";
     }
+  }
+
+  @Authorized("admin")
+  @Query(() => String)
+  async adminQuery() {
+    return "you are admin";
   }
 }
