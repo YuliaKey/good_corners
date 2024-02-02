@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import AdCard, { AdCardProps } from "./AdCard";
 import axios from "axios";
-import DisplayAds from "./DisplayAds.tsx";
+import DisplayAds from "./DisplayAds";
 import { useRouter } from "next/router";
 import { gql, useMutation, useQuery } from "@apollo/client";
 

@@ -2,7 +2,7 @@ import { useState, useEffect } from "react";
 import { useRouter } from "next/router";
 import axios from "axios";
 import { AdCardProps } from "@/components/AdCard";
-import DisplayAds from "@/components/DisplayAds.tsx";
+import DisplayAds from "@/components/DisplayAds";
 
 const SearchResults = () => {
   const [searchedAds, setSearchedAds] = useState<AdCardProps[]>([]);
